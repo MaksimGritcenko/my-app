@@ -1,0 +1,29 @@
+:root {
+    --note-color: rgb(255, 255, 230);
+}
+
+.Note {
+    width: 150px;
+    height: 200px;
+    background-color: var(--note-color);
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    transition: box-shadow .3s ease-out;
+
+    &:hover {
+        box-shadow: 0 0px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 30%);
+    }
+}
+
+.DragAndDrop {
+    &_isDragging {
+        .Note {
+            box-shadow: 0 0px 2px 0 rgb(60 64 67 / 30%),
+                0 0px 5px 1px rgb(60 64 67 / 20%),
+                0 0px 8px 1px rgb(60 64 67 / 15%),
+                0 0px 12px 1px rgb(60 64 67 / 8%);
+
+        }
+    }
+}

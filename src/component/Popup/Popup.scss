@@ -1,0 +1,40 @@
+// @import "src/style/base/media";
+
+:root {
+    --bg-opacity-40: rgba(0, 0, 0, .4);
+    --content-box-shadow: 1px -1px 28px -10px rgba(0,0,0,.53);
+}
+
+.Popup {
+    &-Wrapper {
+        display: flex;
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: var(--bg-opacity-40);
+        transform: translateX(-1000%);
+        z-index: 100;
+
+        &_isActive {
+            transform: translateX(0);
+        }
+    }
+
+    &-Content {
+        position: relative;
+        background-color: azure;
+        padding: 100px 70px;
+        border-radius: 10px;
+        box-shadow: var(--content-box-shadow);
+    }
+
+    &-Close.MuiIconButton-sizeMedium {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}

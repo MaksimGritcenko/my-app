@@ -1,0 +1,15 @@
+:root {
+    --dnd-x: 0;
+    --dnd-y: 0;
+}
+
+.DragAndDrop {
+    position: fixed;
+    top: var(--dnd-y);
+    left: var(--dnd-x);
+
+    &_isDragging {
+        cursor: move;
+        z-index: 1;
+    }
+}

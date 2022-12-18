@@ -1,0 +1,37 @@
+.CloseBtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color .1s ease-out;
+
+    &:hover {
+        background-color: rgba(200, 200, 200, .2);
+    }
+
+
+    &:after,
+    &::before {
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        display: block;
+        content: '';
+        width: 2px;
+        height: 18px;
+        background: #777;
+    }
+
+    &:after {
+        transform: translate3d(50%, -50%, 0) rotate(-45deg);
+    }
+
+    &::before {
+        transform: translate3d(50%, -50%, 0) rotate(45deg);
+    }
+}
