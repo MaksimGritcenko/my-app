@@ -1,7 +1,8 @@
 import {memo, useRef, useEffect, useState, type FC} from 'react';
-import {useDispatch} from 'react-redux';
+import {compose} from 'redux';
+import {useDispatch, connect} from 'react-redux';
 import {type PositionType, type NoteType, setNewNotePosition} from '@store/notesSlice';
-import {type AppDispatch} from '@store/index';
+import {type RootState, type AppDispatch} from '@store/index';
 
 import NoteComponent from './Note.component';
 import {type WebSocketType} from '@component/Board/Board.container';
@@ -9,12 +10,18 @@ import {composeUpdateNotePayload, getIsEditableElemActive, setEditableDivCaret} 
 import {ESCAPE_CODE} from '@component/Popup/Popup.config';
 import {ENTER_KEY} from './Note.config';
 
-export type PropsType = {
+export const mapStateToProps = (state: RootState) => ({
+	user: state.userReducer.user,
+});
+
+export type SelfType = {
 	note: NoteType;
 	ws: WebSocketType;
 	movingPosition: PositionType;
 	ownerUser: string;
 };
+export type MstpType = ReturnType<typeof mapStateToProps>;
+export type PropsType = MstpType & SelfType;
 
 export const NoteContainer: FC<PropsType> = props => {
 	const [beforePosition, setBeforePosition] = useState<PositionType>({x: 0, y: 0});
@@ -38,11 +45,12 @@ export const NoteContainer: FC<PropsType> = props => {
 	}, []);
 
 	function updateNotePosition(nextPosition: PositionType) {
-		const {ws, note} = props;
+		const {ws, note, user} = props;
 
 		if (
 			!ws
             || JSON.stringify(note.position) === JSON.stringify(nextPosition)
+            || user?.username !== note.user
 		) {
 			return;
 		}
@@ -88,13 +96,14 @@ export const NoteContainer: FC<PropsType> = props => {
 	};
 
 	function onClickOutside() {
-		const {note} = props;
+		const {note, user} = props;
 
 		const nextEditorText = noteEditorRef.current?.innerText;
 
 		if (
 			typeof nextEditorText !== 'string'
             || nextEditorText === note.noteText
+            || user?.username !== note.user
 		) {
 			return;
 		}
@@ -111,6 +120,7 @@ export const NoteContainer: FC<PropsType> = props => {
 	}
 
 	function onEditorMouseUp(e: React.MouseEvent<HTMLDivElement>) {
+		const {note, user} = props;
 		const {clientX, clientY} = e;
 		const {x, y} = beforePosition;
 
@@ -118,7 +128,11 @@ export const NoteContainer: FC<PropsType> = props => {
 
 		e.preventDefault();
 
-		if (clientX !== x || clientY !== y) {
+		if (
+			clientX !== x
+            || clientY !== y
+            || user?.username !== note.user
+		) {
 			return;
 		}
 
@@ -141,4 +155,7 @@ export const NoteContainer: FC<PropsType> = props => {
 	/>;
 };
 
-export default memo(NoteContainer);
+export default compose<FC<SelfType>>(
+	memo,
+	connect(mapStateToProps),
+)(NoteContainer);

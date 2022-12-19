@@ -84,6 +84,10 @@ export const DragAndDrop: FC<PropsType> = ({
 	function onMouseDown(e: React.MouseEvent<HTMLDivElement>) {
 		const {clientX, clientY} = e;
 
+		if (!isOwner) {
+			e.preventDefault();
+		}
+
 		if (
 			!isOwner
             || isDraggable

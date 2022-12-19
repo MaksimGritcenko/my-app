@@ -1,11 +1,10 @@
 import {memo, type RefObject, type FC, type MouseEvent} from 'react';
-import {type WebSocketType, type MstpType as ContainerPropsType} from './Board.container';
-
+import {type PositionType} from '@store/notesSlice';
 import Note from '@component/Note';
 
+import {type WebSocketType, type MstpType as ContainerPropsType} from './Board.container';
+
 import './Board.scss';
-import NoteEditPopup from '@component/NoteEditPopup';
-import {type PositionType} from '@store/notesSlice';
 
 export type PropsType = ContainerPropsType & {
 	onMouseDown: (e: MouseEvent<HTMLElement>) => void;
@@ -44,7 +43,6 @@ export const BoardComponent: FC<PropsType> = ({
 			onMouseUp={onMouseUp}
 			className='Board'
 		>
-			<NoteEditPopup />
 			{renderNotes(notes, ws)}
 		</main>
 	);
