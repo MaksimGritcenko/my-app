@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import {useEffect, useState, type FC} from 'react';
 import {connect, useDispatch} from 'react-redux';
+
 import {type RootState, type AppDispatch} from '@store/index';
 import Board from '@component/Board';
-
-import './App.scss';
 import LoginPopup from '@component/LoginPopup';
 import {getUser} from '@store/userSlice';
 
@@ -25,7 +24,7 @@ export const App: FC<MstpType> = ({user}) => {
 	}, []);
 
 	function renderBoard() {
-		if (!user?.id) {
+		if (typeof user?.id !== 'number') {
 			return null;
 		}
 
@@ -33,7 +32,7 @@ export const App: FC<MstpType> = ({user}) => {
 	}
 
 	function renderLoginPopup() {
-		if (user?.id) {
+		if (typeof user?.id === 'number') {
 			return null;
 		}
 

@@ -1,34 +1,25 @@
 import jwt from 'jsonwebtoken';
-import type { Customer } from '../types';
+import {generateEntryId} from '../util/entry';
+import type {Customer} from '../types';
 
 export const jwsSecret = 'secret';
 
-function _getIncrementCustomerId(customers: Array<Customer>): number {
-    return customers.reduce((acc, { id }) => {
-        if (acc < id) {
-            acc = id;
-        }
-
-        return acc;
-    }, 1);
-}
-
 export function composeCustomer(
-    username: string,
-    token: string,
-    customers: Array<Customer>
+	username: string,
+	token: string,
+	customers: Customer[],
 ): Customer {
-    return {
-        id: _getIncrementCustomerId(customers),
-        username,
-        token
-    };
+	return {
+		id: generateEntryId(customers),
+		username,
+		token,
+	};
 }
 
 export function generateWebToken(username: string): string {
-    if (!username) {
-        return '';
-    }
+	if (!username) {
+		return '';
+	}
 
-    return jwt.sign({ username }, jwsSecret);
+	return jwt.sign({username}, jwsSecret);
 }

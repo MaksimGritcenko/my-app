@@ -9,6 +9,8 @@ import React, {
 } from 'react';
 import {type PositionType} from '@store/notesSlice';
 import {getPositionInPercent} from '@util/dnd';
+import {getIsEditableElemActive} from '@util/Notes';
+import {composeClassName} from '@util/class';
 
 import './DragAndDrop.scss';
 
@@ -21,6 +23,7 @@ export type PropsType = {
 	movingPosition: PositionType;
 	isOwner?: boolean;
 	isDraggable?: boolean;
+	mix: string;
 };
 
 export const DragAndDrop: FC<PropsType> = ({
@@ -30,12 +33,14 @@ export const DragAndDrop: FC<PropsType> = ({
 	updatePositionCb,
 	isOwner = true,
 	isDraggable = true,
+	mix = '',
 }) => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	const [initialPosition, setInitialPosition] = useState(prevPosition);
 	const [position, setPosition] = useState(prevPosition);
 	const [isDragging, setIsDragging] = useState(false);
+	const [isClicked, setIsClicked] = useState(false);
 
 	useEffect(() => {
 		if (!ref.current) {
@@ -48,6 +53,22 @@ export const DragAndDrop: FC<PropsType> = ({
 	useEffect(() => {
 		setRefPosition(prevPosition);
 	}, [prevPosition]);
+
+	/* initialize dragging */
+	useEffect(() => {
+		const {x: clientX, y: clientY} = movingPosition;
+		const {x, y} = initialPosition;
+
+		if (
+			!isClicked
+            || isDragging
+            || (x === clientX && y === clientY)
+		) {
+			return;
+		}
+
+		setIsDragging(true);
+	}, [movingPosition]);
 
 	useEffect(() => {
 		if (!isDragging || !isOwner) {
@@ -83,6 +104,7 @@ export const DragAndDrop: FC<PropsType> = ({
 
 	function onMouseDown(e: React.MouseEvent<HTMLDivElement>) {
 		const {clientX, clientY} = e;
+		const isNoteEditorActive = getIsEditableElemActive();
 
 		if (!isOwner) {
 			e.preventDefault();
@@ -91,12 +113,12 @@ export const DragAndDrop: FC<PropsType> = ({
 		if (
 			!isOwner
             || isDraggable
+            || isNoteEditorActive
 		) {
 			return;
 		}
 
 		e.preventDefault();
-		e.stopPropagation();
 
 		/* blurring currently active element before dragging start */
 		if (
@@ -107,7 +129,7 @@ export const DragAndDrop: FC<PropsType> = ({
 			document.activeElement.blur();
 		}
 
-		setIsDragging(true);
+		setIsClicked(true);
 		handleSetInitialPosition(clientX, clientY);
 	}
 
@@ -119,13 +141,16 @@ export const DragAndDrop: FC<PropsType> = ({
 			return;
 		}
 
+		setIsClicked(false);
 		setIsDragging(false);
 		updatePositionCb(position);
 	}
 
 	return (
 		<div
-			className={isDragging ? 'DragAndDrop DragAndDrop_isDragging' : 'DragAndDrop'}
+			className={
+				`${composeClassName('DragAndDrop', undefined, {isDragging})} ${mix}`
+			}
 			ref={ref}
 			onMouseDown={onMouseDown}
 			onMouseUp={dropElement}

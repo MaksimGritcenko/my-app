@@ -6,6 +6,7 @@ import CloseBtn from '@component/CloseBtn';
 import {type PropsType as ContainerPropsType} from './Popup.container';
 
 import './Popup.scss';
+import {composeClassName} from '@util/class';
 
 export type PropsType = ContainerPropsType & {
 	closePopup: () => void;
@@ -28,12 +29,11 @@ export const Popup: FC<PropsType> = ({
 		return <CloseBtn onClick={closePopup} />;
 	}
 
-	const activeWrapperClassName = isActive ? 'Popup-Wrapper_isActive' : '';
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const onClick = isClosable ? closePopup : () => {};
+	const popupWrapperClass = `${composeClassName('Popup', 'Wrapper')} ${composeClassName('Popup', 'Wrapper', {isActive})}`;
+	const onClick = isClosable ? closePopup : () => undefined;
 
 	return (
-		<div className={`Popup-Wrapper ${activeWrapperClassName}`}>
+		<div className={popupWrapperClass}>
 			<ClickOutside onClick={onClick}>
 				<div className='Popup-Content'>
 					{ children }

@@ -14,16 +14,12 @@
   },
   "scripts": {
     "start:app": "craco start",
-    "start:server": "node api/dist/index.js",
-    "start": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:app\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start:server": "cd api && npm run dev",
+    "start": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:app\""
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {

@@ -22,7 +22,7 @@ export type SelfProps = {
 export type PropsType = MstpType & SelfProps;
 
 export const PopupContainer: FC<PropsType> = props => {
-	const {activePopupId, popupId} = props;
+	const {activePopupId, popupId, isClosable} = props;
 
 	const dispatch: AppDispatch = useDispatch();
 
@@ -37,7 +37,7 @@ export const PopupContainer: FC<PropsType> = props => {
 	function onEscUp(e: KeyboardEvent) {
 		const {key} = e;
 
-		if (key === ESCAPE_CODE) {
+		if (key === ESCAPE_CODE && isClosable) {
 			closePopup();
 		}
 	}

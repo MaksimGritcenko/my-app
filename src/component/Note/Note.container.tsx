@@ -25,6 +25,7 @@ export type PropsType = MstpType & SelfType;
 
 export const NoteContainer: FC<PropsType> = props => {
 	const [beforePosition, setBeforePosition] = useState<PositionType>({x: 0, y: 0});
+	const [isHovering, setIsHovering] = useState<boolean>(false);
 	const noteRef = useRef<HTMLDivElement>(null);
 	const noteEditorRef = useRef<HTMLDivElement>(null);
 	const dispatch: AppDispatch = useDispatch();
@@ -95,10 +96,15 @@ export const NoteContainer: FC<PropsType> = props => {
 		setBeforePosition({x: e.clientX, y: e.clientY});
 	};
 
+	function onNoteClick() {
+		setIsHovering(true);
+	}
+
 	function onClickOutside() {
 		const {note, user} = props;
-
 		const nextEditorText = noteEditorRef.current?.innerText;
+
+		setIsHovering(false);
 
 		if (
 			typeof nextEditorText !== 'string'
@@ -147,7 +153,9 @@ export const NoteContainer: FC<PropsType> = props => {
 		{...props}
 		noteRef={noteRef}
 		noteEditorRef={noteEditorRef}
+		isHovering={isHovering}
 		onKeyDown={onKeyDown}
+		onNoteClick={onNoteClick}
 		onClickOutside={onClickOutside}
 		updateNotePosition={updateNotePosition}
 		onEditorMouseDown={onEditorMouseDown}

@@ -1,7 +1,9 @@
+import {type NoteAction} from 'util/ws';
+
 export type Customer = {
-    id: number
-    username: string
-    token: string
+	id: number;
+	username: string;
+	token: string;
 };
 
 export type PositionType = {
@@ -18,6 +20,16 @@ export type NoteType = {
 };
 
 export type Coordinates = {
-    x: number
-    y: number
+	x: number;
+	y: number;
+};
+
+export type WsUpdatePayload = {
+	action: NoteAction.update;
+	payload: NoteType;
+};
+
+export type WsCreatePayloadType = {
+	action: NoteAction.create;
+	payload: PositionType;
 };

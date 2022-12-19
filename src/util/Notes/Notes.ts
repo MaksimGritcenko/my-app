@@ -8,12 +8,12 @@ export enum NoteAction {
 
 export const composeCreateNotePayload = (position: PositionType) => JSON.stringify({
 	action: NoteAction.create,
-	position,
+	payload: position,
 });
 
 export const composeUpdateNotePayload = (note: NoteType) => JSON.stringify({
 	action: NoteAction.update,
-	note,
+	payload: note,
 });
 
 export const getIsEditableElemActive = (): boolean => (document.activeElement as HTMLElement)?.contentEditable === 'true';
