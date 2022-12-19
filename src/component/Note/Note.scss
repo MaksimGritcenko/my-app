@@ -14,6 +14,32 @@
     &:hover {
         box-shadow: 0 0px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 30%);
     }
+
+    &-Header {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 2rem;
+        line-height: 2.4rem;
+        margin-bottom: 10px;
+    }
+
+    &-Text {
+        font-size: 1.6rem;
+        text-align: left;
+        overflow-y: scroll;
+        padding: 5px;
+        height: calc(100% - 2.4rem - 10px);
+        max-height: calc(100% - 2.4rem - 20px);
+
+        &::-webkit-scrollbar {
+            width: 2px;
+            background: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            width: 2px;
+            background: #000;
+        }
+    }
 }
 
 .DragAndDrop {

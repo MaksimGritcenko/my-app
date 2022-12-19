@@ -23,6 +23,16 @@ server.use(
 
 const port = 3001;
 
+function getBearerToken(req: Request): string {
+    const {headers: {authorization}} = req;
+
+    if (!authorization?.includes('Bearer ')) {
+        return '';
+    }
+
+    return authorization?.split(' ')[1];
+}
+
 function sendToAllClients(ws: WebSocket, message: string) {
     expressWs.getWss().clients.forEach((client) => {
         if (client === ws || client.readyState !== WebSocket.OPEN) {
@@ -83,6 +93,27 @@ server.post("/api/login", (req: Request, res: Response) => {
 	customers.push(customer);
 
 	res.status(200).send(customer);
+});
+
+server.get("/api/user", (req: Request, res: Response) => {
+    const token = getBearerToken(req);
+
+	if (!token) {
+		res.status(200).send(false);
+        return;
+	}
+
+    jwt.verify(token, jwsSecret, (err, decoded) => {
+        if (err) {
+            res.status(200).send(false);
+            return;
+        }
+
+        const user = (decoded as {username: string}).username;
+        const customer = customers.filter(({username}) => username === user)[0];
+
+        res.status(200).send(customer);
+    });
 });
 
 server.listen(port, () => {

@@ -24,12 +24,14 @@ export const BoardComponent: FC<PropsType> = ({
 	onMouseUp,
 	movingPosition,
 	ws,
+	user,
 }) => {
 	function renderNotes(notes: PropsType['notes'], ws: WebSocketType) {
 		return notes.map((note, i) => <Note
 			key={`${note.user}_${i}`}
-			{...note}
+			note={note}
 			movingPosition={movingPosition}
+			ownerUser={user?.username ?? ''}
 			ws={ws}
 		/>);
 	}

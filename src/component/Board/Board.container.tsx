@@ -8,7 +8,7 @@ import {getToken} from '@util/Request';
 import {setNotes} from '@store/notesSlice';
 
 import BoardComponent from './Board.component';
-import {composeCreateNotePayload} from '@util/Notes';
+import {composeCreateNotePayload, getIsEditableElemActive} from '@util/Notes';
 
 export const mapStateToProps = (state: RootState) => ({
 	notes: state.notesReducer.notes,
@@ -24,6 +24,7 @@ export const BoardContainer: FC<MstpType> = props => {
 	const [ws, setWs] = useState<WebSocketType>();
 	const [initialPosition, setInitialPosition] = useState<PositionType>({x: 0, y: 0});
 	const [movingPosition, setMovingPosition] = useState<PositionType>({x: 0, y: 0});
+	const [wasEditableElementActive, setWasEditableElementActive] = useState<boolean>(false);
 	const dispatch: AppDispatch = useDispatch();
 
 	useEffect(() => {
@@ -43,6 +44,10 @@ export const BoardContainer: FC<MstpType> = props => {
 
 	function onBoardMouseDown({clientX: x, clientY: y}: MouseEvent<HTMLElement>) {
 		setInitialPosition({x, y});
+
+		if (getIsEditableElemActive()) {
+			setWasEditableElementActive(true);
+		}
 	}
 
 	function onBoardMouseMove({clientX: x, clientY: y}: MouseEvent<HTMLElement>) {
@@ -51,11 +56,15 @@ export const BoardContainer: FC<MstpType> = props => {
 
 	function onBoardMouseUp({clientX: x, clientY: y, target}: MouseEvent<HTMLElement>) {
 		const {x: initialX, y: initialY} = initialPosition;
+		const isEditableElemActive = wasEditableElementActive;
+
+		setWasEditableElementActive(false);
 
 		if (
 			!(target as Node).contains(boardRef.current)
 			|| !ws
             || (initialX !== x && initialY !== y)
+            || isEditableElemActive
 		) {
 			return;
 		}

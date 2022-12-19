@@ -16,18 +16,25 @@ export const Popup: FC<PropsType> = ({
 	activePopupId,
 	children,
 	closePopup,
+	isClosable = true,
 }) => {
 	const isActive = popupId === activePopupId;
 
 	function renderCloseBtn() {
+		if (!isClosable) {
+			return null;
+		}
+
 		return <CloseBtn onClick={closePopup} />;
 	}
 
 	const activeWrapperClassName = isActive ? 'Popup-Wrapper_isActive' : '';
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const onClick = isClosable ? closePopup : () => {};
 
 	return (
 		<div className={`Popup-Wrapper ${activeWrapperClassName}`}>
-			<ClickOutside onClick={closePopup}>
+			<ClickOutside onClick={onClick}>
 				<div className='Popup-Content'>
 					{ children }
 					{ renderCloseBtn() }

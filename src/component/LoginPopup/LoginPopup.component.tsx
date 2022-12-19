@@ -1,5 +1,8 @@
 import Popup from '@component/Popup';
+import {type AppDispatch} from '@store/index';
+import {login} from '@store/userSlice';
 import {useState, type FormEvent, memo, type FC, type ChangeEvent} from 'react';
+import {useDispatch} from 'react-redux';
 import {LOGIN_POPUP_ID} from './LoginPopup.config';
 
 export type FormDataType = {
@@ -7,6 +10,7 @@ export type FormDataType = {
 };
 
 export const LoginPopupComponent: FC = () => {
+	const dispatch: AppDispatch = useDispatch();
 	const [formData, setFormData] = useState<FormDataType>({
 		username: '',
 	});
@@ -19,12 +23,15 @@ export const LoginPopupComponent: FC = () => {
 	}
 
 	function onSubmit(e: FormEvent) {
+		const {username} = formData;
+
 		e.preventDefault();
-		console.log(formData);
+
+		void dispatch(login(username));
 	}
 
 	return (
-		<Popup popupId={LOGIN_POPUP_ID}>
+		<Popup popupId={LOGIN_POPUP_ID} isClosable={false}>
 			<div className='LoginPopup'>
 				<form onSubmit={onSubmit}>
 					<input name='username' onChange={handleChange} />

@@ -17,6 +17,7 @@ export type MstpType = ReturnType<typeof mapStateToProps>;
 export type SelfProps = {
 	children: ReactElement | ReactElement[];
 	popupId: string;
+	isClosable?: boolean;
 };
 export type PropsType = MstpType & SelfProps;
 

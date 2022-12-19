@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 export const getToken = (isBearer = true): string => {
-	const token = sessionStorage.getItem('token');
+	const token = localStorage.getItem('token');
 	return token
 		? isBearer ? `Bearer ${token}` : token
 		: '';
@@ -30,5 +30,3 @@ export const putFetch = async (URI: string, body: any): Promise<Response> => fet
 	body: JSON.stringify(body),
 	headers: getHeaders(),
 });
-
-// add query string to get and delete

@@ -18,7 +18,8 @@ export type PropsType = {
 export const ClickOutside: FC<PropsType> = props => {
 	const {children, onClick} = props;
 
-	const childrenRefs: Array<RefObject<HTMLElement | undefined>> = Children.map(children, () => useRef());
+	const childrenRefs = Children
+		.map<RefObject<HTMLElement | undefined>, ReactElement>(children, () => useRef());
 
 	useEffect(() => {
 		document.addEventListener('click', handleClick);
@@ -27,7 +28,7 @@ export const ClickOutside: FC<PropsType> = props => {
 		};
 	});
 
-	function handleClick(e: MouseEvent) {
+	function handleClick(e: MouseEvent): void {
 		const {target} = e ?? {};
 
 		if (target === null) {
@@ -40,7 +41,7 @@ export const ClickOutside: FC<PropsType> = props => {
 	}
 
 	return <>
-		{Children.map(children, (element, i) => cloneElement(element, {ref: childrenRefs[i]}))}
+		{Children.map<ReactElement, ReactElement>(children, (element, i) => cloneElement(element, {ref: childrenRefs[i]}))}
 	</>;
 };
 

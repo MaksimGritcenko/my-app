@@ -19,6 +19,8 @@ export type PropsType = {
 	prevPosition: PositionType;
 	updatePositionCb: UpdatePositionCbType;
 	movingPosition: PositionType;
+	isOwner?: boolean;
+	isDraggable?: boolean;
 };
 
 export const DragAndDrop: FC<PropsType> = ({
@@ -26,6 +28,8 @@ export const DragAndDrop: FC<PropsType> = ({
 	prevPosition,
 	movingPosition,
 	updatePositionCb,
+	isOwner = true,
+	isDraggable = true,
 }) => {
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -46,7 +50,7 @@ export const DragAndDrop: FC<PropsType> = ({
 	}, [prevPosition]);
 
 	useEffect(() => {
-		if (!isDragging) {
+		if (!isDragging || !isOwner) {
 			return;
 		}
 
@@ -80,8 +84,24 @@ export const DragAndDrop: FC<PropsType> = ({
 	function onMouseDown(e: React.MouseEvent<HTMLDivElement>) {
 		const {clientX, clientY} = e;
 
+		if (
+			!isOwner
+            || isDraggable
+		) {
+			return;
+		}
+
 		e.preventDefault();
 		e.stopPropagation();
+
+		/* blurring currently active element before dragging start */
+		if (
+			document.activeElement
+            && document.activeElement !== document.body
+            && document.activeElement instanceof HTMLElement
+		) {
+			document.activeElement.blur();
+		}
 
 		setIsDragging(true);
 		handleSetInitialPosition(clientX, clientY);
@@ -91,6 +111,10 @@ export const DragAndDrop: FC<PropsType> = ({
 		e.preventDefault();
 		e.stopPropagation();
 
+		if (!isOwner) {
+			return;
+		}
+
 		setIsDragging(false);
 		updatePositionCb(position);
 	}
@@ -98,7 +122,6 @@ export const DragAndDrop: FC<PropsType> = ({
 	return (
 		<div
 			className={isDragging ? 'DragAndDrop DragAndDrop_isDragging' : 'DragAndDrop'}
-			draggable
 			ref={ref}
 			onMouseDown={onMouseDown}
 			onMouseUp={dropElement}

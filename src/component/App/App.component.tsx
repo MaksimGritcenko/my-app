@@ -1,28 +1,55 @@
-import {useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {type AppDispatch} from '@store/index';
-import {login} from '@store/userSlice';
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import {useEffect, useState, type FC} from 'react';
+import {connect, useDispatch} from 'react-redux';
+import {type RootState, type AppDispatch} from '@store/index';
 import Board from '@component/Board';
 
 import './App.scss';
 import LoginPopup from '@component/LoginPopup';
-import {setActivePopup} from '@store/popupSlice';
-import {LOGIN_POPUP_ID} from '@component/LoginPopup/LoginPopup.config';
+import {getUser} from '@store/userSlice';
 
-function App() {
+export const mapStateToProps = (state: RootState) => ({
+	user: state.userReducer.user,
+});
+
+export type MstpType = ReturnType<typeof mapStateToProps>;
+
+export const App: FC<MstpType> = ({user}) => {
 	const dispatch: AppDispatch = useDispatch();
+	const [isAppInitialized, setIsAppInitialized] = useState<boolean>(false);
 
 	useEffect(() => {
-		dispatch(setActivePopup(LOGIN_POPUP_ID));
-		// void dispatch(login('maksim'));
+		dispatch(getUser()).then(() => {
+			setIsAppInitialized(true);
+		});
 	}, []);
+
+	function renderBoard() {
+		if (!user?.id) {
+			return null;
+		}
+
+		return <Board />;
+	}
+
+	function renderLoginPopup() {
+		if (user?.id) {
+			return null;
+		}
+
+		return <LoginPopup />;
+	}
+
+	if (!isAppInitialized) {
+		return null;
+	}
 
 	return (
 		<div className='App'>
-			<Board />
-			<LoginPopup />
+			{renderBoard()}
+			{renderLoginPopup()}
 		</div>
 	);
-}
+};
 
-export default App;
+export default connect(mapStateToProps)(App);
