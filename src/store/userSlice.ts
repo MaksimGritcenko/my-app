@@ -42,6 +42,8 @@ export const getUser = createAsyncThunk<void, undefined>(
 
 			dispatch(setActivePopup(LOGIN_POPUP_ID));
 		} catch (e) {
+			localStorage.removeItem('token');
+			dispatch(setActivePopup(LOGIN_POPUP_ID));
 			console.error(e);
 		}
 	},
