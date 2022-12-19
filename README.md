@@ -6,7 +6,7 @@
 
 - yarn
 
-## Available scripts
+## Installation
 
 ### `yarn && cd api && yarn && cd ..`
 
